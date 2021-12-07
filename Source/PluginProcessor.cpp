@@ -336,12 +336,12 @@ void SMITH_P03_LFOAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
             if (channel == 0) //Left
             {
                 DelayOutput = wetGain * DelayL.tick(DelayL.nextOut() * fbGain + channelData[i]);   //Call LFO.tick(wetGain)??? to add Tremolo?
-                channelData[i] = LPL.tick(HPL.tick(DelayOutput * wetGain + channelData[i] * dryGain));
+                channelData[i] = LPL.tick(HPL.tick(DelayOutput)) * wetGain + channelData[i] * dryGain;
             }
             if (channel == 1)
             {
                 DelayOutput = wetGain * DelayR.tick(DelayR.nextOut() * fbGain + channelData[i]);
-                channelData[i] = LPL.tick(HPR.tick(DelayOutput * wetGain + channelData[i] * dryGain));
+                channelData[i] = LPL.tick(HPR.tick(DelayOutput)) * wetGain + channelData[i] * dryGain;
             }
             
             

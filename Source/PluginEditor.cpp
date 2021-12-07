@@ -101,7 +101,7 @@ SMITH_P03_LFOAudioProcessorEditor::SMITH_P03_LFOAudioProcessorEditor (SMITH_P03_
     
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (500, 300);
+    setSize (1050, 300);
     startTimer (100);
 }
 
@@ -116,7 +116,7 @@ void SMITH_P03_LFOAudioProcessorEditor::paint (juce::Graphics& g)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
     g.setColour (juce::Colours::white);
-    g.setFont (15.0f);
+    g.setFont (50.0f);
     g.drawFittedText ("Flanger and Tremolo share an LFO", getLocalBounds(), juce::Justification::centredTop, 1);
 }
 
@@ -125,21 +125,21 @@ void SMITH_P03_LFOAudioProcessorEditor::resized()
     // This is generally where you'll want to lay out the positions of any
     // subcomponents in your editor..
     float y = 150;
-    float xDel = 50;
-    float xDep = 100;
-    float xFeed = 150;
-    float xSpeed = 200;
-    float xHP = 250;
-    float xLP = 300;
-    float xDW = 350;
+    float xDel = 25;
+    float xDep = 175;
+    float xFeed = 325;
+    float xSpeed = 475;
+    float xHP = 625;
+    float xLP = 775;
+    float xDW = 925;
     
-    Delay.setBounds(xDel, y, 50, 50);
-    Depth.setBounds(xDep, y, 50, 50);
-    Feedback.setBounds(xFeed, y, 50, 50);
-    Speed.setBounds(xSpeed, y, 50, 50);
-    HP.setBounds(xHP, y, 50, 50);
-    LP.setBounds(xLP, y, 50, 50);
-    DryWet.setBounds(xDW, y, 50, 50);
+    Delay.setBounds(xDel, y, 150, 150);
+    Depth.setBounds(xDep, y, 150, 150);
+    Feedback.setBounds(xFeed, y, 150, 150);
+    Speed.setBounds(xSpeed, y, 150, 150);
+    HP.setBounds(xHP, y, 150, 150);
+    LP.setBounds(xLP, y, 150, 150);
+    DryWet.setBounds(xDW, y, 150, 150);
 }
 
 void SMITH_P03_LFOAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
