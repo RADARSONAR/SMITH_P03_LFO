@@ -49,7 +49,7 @@ SMITH_P03_LFOAudioProcessorEditor::SMITH_P03_LFOAudioProcessorEditor (SMITH_P03_
     Delaylabel.setJustificationType(juce::Justification::centredTop);
     addAndMakeVisible(Delaylabel);
     
-    Speed.setRange(0.1, 10.0, 0.01);
+    Speed.setRange(0.1, 20.0, 0.01);
     Speed.setSliderStyle(juce::Slider::RotaryVerticalDrag);
     Speed.setTextValueSuffix("Hz");
     Speed.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 40, 20);
@@ -85,7 +85,17 @@ SMITH_P03_LFOAudioProcessorEditor::SMITH_P03_LFOAudioProcessorEditor (SMITH_P03_
     Feedbacklabel.setJustificationType(juce::Justification::centredTop);
     addAndMakeVisible(Feedbacklabel);
     
-    //Intensity.setRange(0.0, 10.0, 1.0);
+    Intensity.setRange(0.0, 100.0, 10.0);
+    Intensity.setSliderStyle(juce::Slider::RotaryVerticalDrag);
+    Intensity.setTextValueSuffix("%");
+    Intensity.setTextBoxStyle(juce::Slider::TextBoxBelow, false, 40, 20);
+    Intensity.addListener(this);
+    addAndMakeVisible(Intensity);
+    
+    Intensitylabel.setText("Tremolo Intensity", juce::dontSendNotification);
+    Intensitylabel.attachToComponent(&Intensity, false);
+    Intensitylabel.setJustificationType(juce::Justification::centredTop);
+    addAndMakeVisible(Intensitylabel);
     
     DryWet.setRange(0.0, 100.0, 1.0);
     DryWet.setSliderStyle(juce::Slider::RotaryVerticalDrag);
@@ -101,7 +111,7 @@ SMITH_P03_LFOAudioProcessorEditor::SMITH_P03_LFOAudioProcessorEditor (SMITH_P03_
     
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (1050, 300);
+    setSize (1150, 300);
     startTimer (100);
 }
 
@@ -129,9 +139,10 @@ void SMITH_P03_LFOAudioProcessorEditor::resized()
     float xDep = 175;
     float xFeed = 325;
     float xSpeed = 475;
-    float xHP = 625;
-    float xLP = 775;
-    float xDW = 925;
+    float xInten = 625;
+    float xHP = 775;
+    float xLP = 925;
+    float xDW = 1075;
     
     Delay.setBounds(xDel, y, 150, 150);
     Depth.setBounds(xDep, y, 150, 150);
@@ -140,6 +151,7 @@ void SMITH_P03_LFOAudioProcessorEditor::resized()
     HP.setBounds(xHP, y, 150, 150);
     LP.setBounds(xLP, y, 150, 150);
     DryWet.setBounds(xDW, y, 150, 150);
+    Intensity.setBounds(xInten, y, 150, 150);
 }
 
 void SMITH_P03_LFOAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
@@ -192,6 +204,13 @@ void SMITH_P03_LFOAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
         *audioProcessor.DelayTimeUParam = (float) Delay.getValue();
         audioProcessor.DelayTimeUParam->endChangeGesture();
     }
+    
+    else if (slider == &Intensity) {
+        audioProcessor.IntensityUParam->beginChangeGesture();
+        
+        *audioProcessor.IntensityUParam = (float) Intensity.getValue();
+        audioProcessor.IntensityUParam->endChangeGesture();
+    }
 }
 
 void SMITH_P03_LFOAudioProcessorEditor::timerCallback()
@@ -203,4 +222,5 @@ void SMITH_P03_LFOAudioProcessorEditor::timerCallback()
     LP.setValue(*audioProcessor.LPUParam, juce::dontSendNotification);
     Depth.setValue(*audioProcessor.DepthUParam, juce::dontSendNotification);
     Speed.setValue(*audioProcessor.SpeedUParam, juce::dontSendNotification);
+    Intensity.setValue(*audioProcessor.IntensityUParam, juce::dontSendNotification);
 }

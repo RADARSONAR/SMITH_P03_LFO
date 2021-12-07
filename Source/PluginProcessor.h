@@ -61,11 +61,11 @@ public:
     juce::AudioParameterFloat* DryWetUParam;
     juce::AudioParameterFloat* FeedbackUParam;
     juce::AudioParameterFloat* DelayTimeUParam;
-    juce::AudioParameterFloat* SpeedUParam;  //same as LFORate in Tremolo Excersize?
+    juce::AudioParameterFloat* SpeedUParam;  //same as LFORate
     juce::AudioParameterFloat* IntensityUParam;  //Currently Not Taken into Account. I think this is just an additional gain control. Based my Tremolo off of my Fender Twin Reverb Settings
     juce::AudioParameterFloat* HPUParam;
     juce::AudioParameterFloat* LPUParam;
-    juce::AudioParameterFloat* DepthUParam;
+    juce::AudioParameterFloat* DepthUParam; //Amount of LFO Modulation
     
 private:
     //==============================================================================
@@ -94,6 +94,12 @@ private:
     float prevLPValue;
     float prevDryWetValue;
     float prevFeedbackValue;
+    float prevIntensityValue;
+    
+    //Tremolo
+    float tremoloGain;
+    float tremLFO;
+    float IntensityAParam;
     
     //Delay Things
     float DelayInput;

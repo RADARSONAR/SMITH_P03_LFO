@@ -55,7 +55,7 @@ SMITH_P03_LFOAudioProcessor::SMITH_P03_LFOAudioProcessor()
     addParameter (SpeedUParam = new juce::AudioParameterFloat (
                     "Spped", // parameterID
                     "Speed", // parameter name
-                    juce::NormalisableRange<float> (0.1f, 10.0f), //parameter range
+                    juce::NormalisableRange<float> (0.1f, 20.0f), //parameter range
                     1.0f)); // default value
         
     addParameter (DepthUParam = new juce::AudioParameterFloat (
@@ -63,6 +63,12 @@ SMITH_P03_LFOAudioProcessor::SMITH_P03_LFOAudioProcessor()
                             "Depth", // parameter name
                             juce::NormalisableRange<float> (0.0f, 100.0f), //parameter range
                             50.0f)); // default value
+    
+    addParameter (IntensityUParam = new juce::AudioParameterFloat (
+                            "Intensity", // parameterID
+                            "Intensity", // parameter name
+                            juce::NormalisableRange<float> (0.0f, 100.0f), //parameter range
+                            10.0f)); // default value
     
 }
 
@@ -155,6 +161,7 @@ void SMITH_P03_LFOAudioProcessor::prepareToPlay (double sampleRate, int samplesP
     SpeedAParam = *SpeedUParam;
     FeedbackAParam = *FeedbackUParam;
     DryWetAParam = *DryWetUParam;
+    IntensityAParam = *IntensityUParam;
 }
 
 void SMITH_P03_LFOAudioProcessor::releaseResources()
@@ -211,6 +218,8 @@ void SMITH_P03_LFOAudioProcessor::calcAlgorithimParams()
     wetGain = *DryWetUParam * 0.01;
     fbGain = *FeedbackUParam * 0.01;
     
+    tremoloGain = *IntensityUParam * 0.01;
+    
     
     HPAParam = *HPUParam;
     LPAParam = *LPUParam;
@@ -232,7 +241,7 @@ void SMITH_P03_LFOAudioProcessor::calcAlgorithimParams()
     DelaySamps = calcDelaySamps(DelayTimeUParam->get()); //wait to set delays
     
     LFO.setFreq(SpeedUParam->get(), fs);
-    float N = 1; //N is the amount of swing delay
+    float N = 1024; //N is the amount of swing delay
     lfoDepth = (*DepthUParam * 0.01) * N;
     
     DelayL.setDelay(DelaySamps);
@@ -301,9 +310,6 @@ void SMITH_P03_LFOAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
                 FeedbackAParam = linInterpolation(prevFeedbackValue, FeedbackAParam, fract);
             }
             //Interpolation over
-                
-                
-                
             
             /*
              from Delay Project
@@ -327,15 +333,24 @@ void SMITH_P03_LFOAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
              channelData[i] = filterR.tick(channelData[i]);
              }
              */
+            //Tremolo
             
-            // Flanger. No Tremolo LP
+             tremLFO = lfoAmp * tremoloGain;
+             
+             //Need to use lfo to affect wet gain
+             
+            
+            
+            
+            
+            // Flanger. No Tremolo
             DelayTime = DelaySamps + (lfoDepth * lfoAmp);
             DelayL.setDelay(DelayTime);
             DelayR.setDelay(DelayTime);
             
             if (channel == 0) //Left
             {
-                DelayOutput = wetGain * DelayL.tick(DelayL.nextOut() * fbGain + channelData[i]);   //Call LFO.tick(wetGain)??? to add Tremolo?
+                DelayOutput = wetGain * DelayL.tick(DelayL.nextOut() * fbGain + channelData[i]);
                 channelData[i] = LPL.tick(HPL.tick(DelayOutput)) * wetGain + channelData[i] * dryGain;
             }
             if (channel == 1)
