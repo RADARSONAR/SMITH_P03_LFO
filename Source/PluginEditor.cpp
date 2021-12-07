@@ -141,3 +141,66 @@ void SMITH_P03_LFOAudioProcessorEditor::resized()
     LP.setBounds(xLP, y, 50, 50);
     DryWet.setBounds(xDW, y, 50, 50);
 }
+
+void SMITH_P03_LFOAudioProcessorEditor::sliderValueChanged(juce::Slider* slider)
+{
+    if (slider == &Feedback) {
+        audioProcessor.FeedbackUParam->beginChangeGesture();
+        
+        *audioProcessor.FeedbackUParam = (float) Feedback.getValue();
+        audioProcessor.FeedbackUParam->endChangeGesture();
+    }
+    
+    else if (slider == &DryWet) {
+        audioProcessor.DryWetUParam->beginChangeGesture();
+        
+        *audioProcessor.DryWetUParam = (float) DryWet.getValue();
+        audioProcessor.DryWetUParam->endChangeGesture();
+    }
+    
+    else if (slider == &HP) {
+        audioProcessor.HPUParam->beginChangeGesture();
+        
+        *audioProcessor.HPUParam = (float) HP.getValue();
+        audioProcessor.HPUParam->endChangeGesture();
+    }
+    
+    else if (slider == &LP) {
+        audioProcessor.LPUParam->beginChangeGesture();
+        
+        *audioProcessor.LPUParam = (float) LP.getValue();
+        audioProcessor.LPUParam->endChangeGesture();
+    }
+    
+    else if (slider == &Depth) {
+        audioProcessor.DepthUParam->beginChangeGesture();
+        
+        *audioProcessor.DepthUParam = (float) Depth.getValue();
+        audioProcessor.DepthUParam->endChangeGesture();
+    }
+    
+    else if (slider == &Speed) {
+        audioProcessor.SpeedUParam->beginChangeGesture();
+        
+        *audioProcessor.SpeedUParam = (float) Speed.getValue();
+        audioProcessor.SpeedUParam->endChangeGesture();
+    }
+    
+    else if (slider == &Delay) {
+        audioProcessor.DelayTimeUParam->beginChangeGesture();
+        
+        *audioProcessor.DelayTimeUParam = (float) Delay.getValue();
+        audioProcessor.DelayTimeUParam->endChangeGesture();
+    }
+}
+
+void SMITH_P03_LFOAudioProcessorEditor::timerCallback()
+{
+    Feedback.setValue(*audioProcessor.FeedbackUParam, juce::dontSendNotification);
+    Delay.setValue(*audioProcessor.DelayTimeUParam, juce::dontSendNotification);
+    DryWet.setValue(*audioProcessor.DryWetUParam, juce::dontSendNotification);
+    HP.setValue(*audioProcessor.HPUParam, juce::dontSendNotification);
+    LP.setValue(*audioProcessor.LPUParam, juce::dontSendNotification);
+    Depth.setValue(*audioProcessor.DepthUParam, juce::dontSendNotification);
+    Speed.setValue(*audioProcessor.SpeedUParam, juce::dontSendNotification);
+}
