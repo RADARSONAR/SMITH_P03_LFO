@@ -111,7 +111,7 @@ SMITH_P03_LFOAudioProcessorEditor::SMITH_P03_LFOAudioProcessorEditor (SMITH_P03_
     
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (1150, 300);
+    setSize (1200, 300);
     startTimer (100);
 }
 
