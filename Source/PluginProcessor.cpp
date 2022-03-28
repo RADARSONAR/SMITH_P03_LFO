@@ -283,9 +283,9 @@ void SMITH_P03_LFOAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
         // ..do something to the data...
         for (int i = 0; i < numSamps; ++i)
         {
-            //LFO first
+            //LFO first, Add another LFO for right and left channel
             lfoAmp = LFO.tick(); //value between -1 and 1. BIPOLAR LFO
-            lfoAmp = lfoAmp * DepthAParam;
+            lfoAmp = lfoAmp * lfoDepth;
             //interpolation of one control
             float fract = ((float) i / (float) numSamps); //creates 0-1 ramp across the loop (linear interpolation)
             if (DepthAParam != prevDepthValue) {
@@ -344,19 +344,19 @@ void SMITH_P03_LFOAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
             
             
             // Flanger. No Tremolo
-            DelayTime = DelaySamps + (lfoDepth * lfoAmp);
+            DelayTime = DelaySamps + (lfoAmp);
             DelayL.setDelay(DelayTime);
             DelayR.setDelay(DelayTime);
             
             if (channel == 0) //Left
             {
-                DelayOutput = wetGain * DelayL.tick(DelayL.nextOut() * fbGain + channelData[i]);
+                DelayOutput = wetGain * DelayL.tick(DelayL.nextOut() * fbGain + (channelData[i] * tremLFO));
                 channelData[i] = LPL.tick(HPL.tick(DelayOutput)) * wetGain + channelData[i] * dryGain;
             }
             if (channel == 1)
             {
-                DelayOutput = wetGain * DelayR.tick(DelayR.nextOut() * fbGain + channelData[i]);
-                channelData[i] = LPL.tick(HPR.tick(DelayOutput)) * wetGain + channelData[i] * dryGain;
+                DelayOutput = wetGain * DelayR.tick(DelayR.nextOut() * fbGain + (channelData[i] * tremLFO));
+                channelData[i] = LPR.tick(HPR.tick(DelayOutput)) * wetGain + channelData[i] * dryGain;
             }
             
             
@@ -377,11 +377,11 @@ void SMITH_P03_LFOAudioProcessor::processBlock (juce::AudioBuffer<float>& buffer
              */
                 
         }
-        prevDepthValue = DepthAParam; //after loop, set prev to current so we only interpolate once. otherwise clicks
-        prevDelayTimeValue = DelayAParam;
-        prevSpeedValue = SpeedAParam;
-        prevHPValue = HPAParam;
-        prevLPValue = LPAParam;
+        prevDepthValue = lfoDepth; //after loop, set prev to current so we only interpolate once. otherwise clicks
+        prevDelayTimeValue = *DelayTimeUParam;
+        prevSpeedValue = *SpeedUParam;
+        prevHPValue = *HPUParam;
+        prevLPValue = *LPUParam;
         prevDryWetValue = *DryWetUParam;
         prevFeedbackValue = *FeedbackUParam;
     }

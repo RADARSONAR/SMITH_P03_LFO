@@ -10,7 +10,7 @@
 
 #include <JuceHeader.h>
 #include "filterCalc/FilterCalc.h"
-#include "STK/Delay.h"
+#include "STK/Delay.h" // Change to DelayA or DelayL as Delay is not an interpolating delay
 #include "STK/BiQuad.h"
 #include "STK/basicLFO.h"
 
